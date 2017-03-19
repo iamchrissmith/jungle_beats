@@ -120,6 +120,39 @@ class JungleBeatsTest < MiniTest::Test
     assert_equal "shu", list.pop
     assert_equal "deep woo shi", list.to_string
   end
+  # Try popping more elements than there
+  def test_pop_too_many_elements
+    list = LinkedList.new
+    list.append("deep")
+    list.append("woo")
+    assert_equal "deep woo", list.to_string
+    assert_equal "woo", list.pop
+    assert_equal "deep", list.to_string
+    assert_equal "deep", list.pop
+    assert_equal "", list.to_string
+    assert_nil list.pop
+    assert_equal '', list.to_string
+  end
+
+  def test_linked_list_cannot_decrease_count_below_zero
+    list = LinkedList.new
+    assert_equal 0, list.count
+    list.decrease_count
+    assert_equal 0, list.count
+  end
+  # Try seeing if an empty list includes anything.
+  def test_includes_when_empty_returns_false
+    list = LinkedList.new
+    refute list.includes?("dep")
+  end
+  # Try inserting elements at a position beyond the length of the list.
+  def test_insert_beyond_list_adds_to_end
+    list = LinkedList.new
+    list.append("deep")
+    list.insert(10, "woo")
+    assert_equal 2, list.count
+    assert_equal "deep woo", list.to_string
+  end
 
   def test_junglebeats_exists
     beats = JungleBeats.new
@@ -174,14 +207,5 @@ class JungleBeatsTest < MiniTest::Test
     beats.reset_rate
     assert_equal 500, beats.rate
   end
-
-  # Try popping more elements than there
-  def test_pop_too_many_elements
-    
-  end
-  # are in the list. Try seeing if an empty
-  # list includes anything.
-  # Try inserting elements at a position
-  # beyond the length of the list.
 
 end

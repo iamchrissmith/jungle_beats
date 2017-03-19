@@ -9,6 +9,10 @@ class LinkedList
     @count += 1
   end
 
+  def decrease_count
+    @count -= 1 unless @count == 0
+  end
+
   def success(node)
     increase_count
     node.data
@@ -17,8 +21,8 @@ class LinkedList
   def travel_links(stop = @count-1)
     links = 0
     current_node = @head
-    until links >= stop
-      current_node = current_node.next_node
+    until links >= stop || current_node.next_node == nil
+      current_node = current_node.next_node if current_node.next_node
       links +=1
     end
     current_node
@@ -53,7 +57,11 @@ class LinkedList
   def insert(location, data)
     current_node = travel_links(location)
     previous_node = travel_links(location - 1)
-    previous_node.next_node = Node.new(data, current_node)
+    if current_node == previous_node
+      previous_node.next_node = Node.new(data)
+    else
+      previous_node.next_node = Node.new(data, current_node)
+    end
     added_node = previous_node.next_node
     success(added_node)
   end
@@ -92,20 +100,27 @@ class LinkedList
   end
 
   def pop
-    to_remove = travel_links (count-1)
-    new_last = travel_links (count-2)
-    new_last.next_node = nil
-    @count -= 1
-    to_remove.data
+    # binding.pry
+    removed_data = nil
+    unless @count == 0
+      to_remove = travel_links (count-1)
+      new_last = travel_links (count-2)
+      removed_data = to_remove.data
+      to_remove == new_last ? @head = nil : new_last.next_node = nil
+      decrease_count
+    end
+    removed_data
   end
 
   def to_string
     string = ''
-    string += @head.data.to_s unless nil
-    next_node = @head.next_node
-    while next_node
-      string += " #{next_node.data.to_s}"
-      next_node = next_node.next_node
+    if @head
+      string += @head.data.to_s unless @head == nil
+      next_node = @head.next_node
+      while next_node
+        string += " #{next_node.data.to_s}"
+        next_node = next_node.next_node
+      end
     end
     string
   end
